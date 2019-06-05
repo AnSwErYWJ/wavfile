@@ -62,7 +62,7 @@ typedef struct {
     int     data_length;
 } waveHeader_t;
 
-/* open read file and get the wav header*/
+/* open read file and get the wav header */
 WAVFILE_IMPORT_OR_EXPORT FILE *wavfile_read_open(const char *filename, waveHeader_t *header);
 
 /* read audio data from file */
