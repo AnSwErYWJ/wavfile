@@ -1,3 +1,6 @@
+# ARCHIVED
+This repo is archived, because this repo will update in https://github.com/AudioKits/exchange. 
+
 # Name
 wavfile - Read/Write wav file with header info API
 
