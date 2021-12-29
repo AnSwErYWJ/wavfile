@@ -1,44 +1,112 @@
-# 当前目录找不到依赖/目标文件时,去指定路径查找
 VPATH ?= .
 
-SRC := wavfile.c
-TEST_SRC := test.c
 
-OBJECTS := $(SRC:.c=.o) # 加了:前面的变量不能使用后面的变量
-TEST_OBJECTS := $(TEST_SRC:.c=.o) # 加了:前面的变量不能使用后面的变量
+#
+# build target
+#
+MODULE 			:= wavtool
+EXE_P2W 		:= pcm2wav
+EXE_W2P 		:= wav2pcm
+EXE_WI 			:= wavinfo
+STATIC_LIBRARY  := lib$(MODULE).a
+SHARE_LIBRARY   := lib$(MODULE).so
+ALL 			:= $(EXE_P2W) $(EXE_W2P) $(EXE_WI) $(STATIC_LIBRARY) $(SHARE_LIBRARY)
 
-CC := gcc
-CXX := g++
-RM := -rm -rf # -表示命令出错.继续执行,忽略错误.
-STRIP := strip
-AR := ar
 
-CPPFLAGS := -I./ # C预处理参数,一般设置I
-CFLAGS := -Wall -Wall -Wno-variadic-macros -Wno-format-zero-length -O2 -std=c99 -fPIC -DNDEBUG -D_GNU_SOURCE -fvisibility=hidden # 编译器参数,C使用
-CXXFLAGS := $(CFLAGS) # C++使用
-LDFLAGS :=  # 链接器参数,如ld ,最好放在源文件之后.
+#
+# toolchains
+#
+CC  	:= gcc
+LD  	:= ld
+CPP 	:= cpp
+CXX 	:= g++
+AR  	:= ar
+AS  	:= as
+NM  	:= nm
+STRIP 	:= strip
+OBJCOPY := objcopy
+RM 		:= -rm -rf
 
-TARGET := wavfile
-EXE := $(TARGET)
-STATIC := lib$(TARGET).a
-SHARE := lib$(TARGET).so
 
-ALL := $(EXE) $(STATIC) $(SHARE)
+#
+# files or dirs
+#
+SRC_FILES := src/wav.c
+INCLUDE_DIRS := -Iinclude
+P2W_FILES := $(SRC_FILES) apps/pcm2wav.c
+W2P_FILES := $(SRC_FILES) apps/wav2pcm.c
+WI_FILES  := $(SRC_FILES) apps/wavinfo.c
 
-.PHONY: $(ALL) $(EXE) $(SHARE) $(STATIC)
+
+#
+# flags
+#
+CFLAGS   := -Os -std=gnu99 -fvisibility=hidden -D_GNU_SOURCE -fPIC
+CFLAGS   += -Wall -Wno-variadic-macros -Wno-format-zero-length -fstack-protector-all -ffunction-sections -fdata-sections
+CFLAGS   +=  $(INCLUDE_DIRS)
+#CFLAGS  += -fPIE
+
+CXXFLAGS := $(subst -std=gnu99,,$(CFLAGS))
+
+LDFLAGS  := -Wl,--gc-sections
+#LDFLAGS  += -pie
+
+
+#
+# rules
+#
+%.o : %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+%.o : %.cc
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.o : %.cpp
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+
+#
+# objects
+#
+OBJECTS = $(subst .c,.o,$(subst .cpp,.o,$(subst .cc,.o,$(SRC_FILES))))
+P2W_OBJECTS = $(subst .c,.o,$(subst .cpp,.o,$(subst .cc,.o,$(P2W_FILES))))
+W2P_OBJECTS = $(subst .c,.o,$(subst .cpp,.o,$(subst .cc,.o,$(W2P_FILES))))
+WI_OBJECTS = $(subst .c,.o,$(subst .cpp,.o,$(subst .cc,.o,$(WI_FILES))))
+
+
+#
+# goal all
+#
+.PHONY: all
 all: $(ALL)
 
-$(EXE): $(OBJECTS) $(TEST_OBJECTS)
+$(EXE_P2W) : $(P2W_OBJECTS)
 	$(CXX) $^ $(LDFLAGS) -o $@
 	$(STRIP) --strip-unneeded $@
 
-$(SHARE): $(OBJECTS)
-	$(CXX) $^ $(LDFLAGS) -shared -o $@
+$(EXE_W2P) : $(W2P_OBJECTS)
+	$(CXX) $^ $(LDFLAGS) -o $@
 	$(STRIP) --strip-unneeded $@
 
-$(STATIC): $(OBJECTS)
-	$(AR) crv $@ $^
+$(EXE_WI) : $(WI_OBJECTS)
+	$(CXX) $^ $(LDFLAGS) -o $@
+	$(STRIP) --strip-unneeded $@
 
+$(STATIC_LIBRARY) : $(OBJECTS)
+	$(AR) crv $@ $^
+	$(LD) -r $^ -o lib$(MODULE)_default.o
+	$(STRIP) --strip-unneeded lib$(MODULE)_default.o
+	$(OBJCOPY) --localize-hidden lib$(MODULE)_default.o lib$(MODULE).o
+	$(AR) crv $@ lib$(MODULE).o
+	$(RM) lib$(MODULE)_default.o lib$(MODULE).o
+
+$(SHARE_LIBRARY) : $(OBJECTS)
+	$(CXX) $^ -shared $(LDFLAGS) -o $@
+	$(STRIP) --strip-unneeded $@
+
+#
+# goal: clean
+#
 .PHONY: clean 
 clean:
-	$(RM) $(OBJECTS) $(TEST_OBJECTS) $(ALL)
+	$(RM) $(OBJECTS) $(P2W_OBJECTS) $(W2P_OBJECTS) $(WI_OBJECTS) $(ALL)
