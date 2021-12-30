@@ -31,7 +31,7 @@ int main(int argc, const char *argv[]) {
 	if (argv[4]) bits = atoi(argv[4]);
 	if (argv[5]) samplerate = atoi(argv[5]);
 	
-	printf("channels: %d, bits: %d, samplerate: %d\n", channels, bits, samplerate);
+	printf("channels: %u, bits: %u, samplerate: %u\n", channels, bits, samplerate);
 
 	input = fopen(argv[1], "rb+");
     if (!input) {

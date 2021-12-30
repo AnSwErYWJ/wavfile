@@ -161,7 +161,7 @@ static int _read_header(FILE *fp, wav_riff_t *riff, wav_fmt_t *fmt, wav_data_t *
         }
 
         if (headerSize > HEADER_SIZE_MAX) {
-            LogE("headerSize %u is out of limit %u !\n", headerSize, HEADER_SIZE_MAX);
+            LogE("headerSize %u is out of limit %d !\n", headerSize, HEADER_SIZE_MAX);
             return -1;
         }
     }
@@ -399,7 +399,7 @@ int wavfile_info(FILE *fp, wavfile_header_t *header) {
     wav_fmt_t fmt;
     wav_data_t data;
 
-    unsigned int headerSize = _read_header(fp, &riff, &fmt, &data);
+    int headerSize = _read_header(fp, &riff, &fmt, &data);
 
     if (headerSize < 0) {
         LogE("wav read header failed!\n");

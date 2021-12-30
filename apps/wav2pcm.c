@@ -32,11 +32,6 @@ int main(int argc, const char *argv[]) {
         goto end;
     }
 
-	if (pcmSize <= 0) {
-		printf("pcm data size: %u is invaild!\n", pcmSize);
-        goto end;
-	}
-
 	output = fopen(argv[2], "wb+");
     if (!output) {
         printf("read output file %s failed!\n", argv[2]);        
