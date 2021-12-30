@@ -9,8 +9,8 @@ MODULE 			:= wavtool
 EXE_P2W 		:= pcm2wav
 EXE_W2P 		:= wav2pcm
 EXE_WI 			:= wavinfo
-STATIC_LIBRARY  := lib$(MODULE).a
-SHARE_LIBRARY   := lib$(MODULE).so
+STATIC_LIBRARY  := lib$(MODULE).a.$(VERSION)
+SHARE_LIBRARY   := lib$(MODULE).so.$(VERSION)
 ALL 			:= $(EXE_P2W) $(EXE_W2P) $(EXE_WI) $(STATIC_LIBRARY) $(SHARE_LIBRARY)
 
 
