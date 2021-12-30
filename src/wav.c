@@ -243,6 +243,11 @@ FILE *wavfile_read_open(const char *filename, unsigned int *size) {
         return NULL;
     }
     
+    if (NULL == size) {
+        LogE("pointer size is NULL!\n");
+        return NULL;
+    }
+
     FILE *fp = NULL;
 
     fp = fopen(filename, "rb+");
