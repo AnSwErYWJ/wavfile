@@ -1,5 +1,6 @@
 VPATH ?= .
 
+include version.mk
 
 #
 # build target
@@ -44,6 +45,13 @@ WI_FILES  := $(SRC_FILES) apps/wavinfo.c
 CFLAGS   := -Os -std=gnu99 -fvisibility=hidden -D_GNU_SOURCE -fPIC
 CFLAGS   += -Wall -Wno-variadic-macros -Wno-format-zero-length -fstack-protector-all -ffunction-sections -fdata-sections
 CFLAGS   +=  $(INCLUDE_DIRS)
+
+CFLAGS += -D MAJOR=$(MAJOR)
+CFLAGS += -D MINOR=$(MINOR)
+CFLAGS += -D REVISION=$(REVISION)
+CFLAGS += -D CID="\"$(CID)\""
+CFLAGS += -D BUILD_TIME="\"$(BUILD_TIME)\""
+
 #CFLAGS  += -fPIE
 
 CXXFLAGS := $(subst -std=gnu99,,$(CFLAGS))
