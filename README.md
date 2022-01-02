@@ -1,117 +1,148 @@
-# This repo is archived, because this repo will update in https://github.com/AudioKits/exchange.
+<p align="center">
+    <a href="#">
+        <img src="https://img.shields.io/badge/Author-AnSwErYWJ-blue" alt="Author">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/github/license/AnSwErYWJ/wavfile?color=red" alt="license">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/github/last-commit/AnSwErYWJ/wavfile?color=orange" alt="last-commit">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/github/languages/top/AnSwErYWJ/wavfile?color=ff69b4" alt="languages">
+    </a>
+    <a href="#">
+        <img src="https://img.shields.io/github/repo-size/AnSwErYWJ/wavfile?color=gren" alt="repo-size">
+    </a>
+</p>
 
 # Name
-wavfile - Read/Write wav file with header info API
+wavfile - dynamically parse and fill the wav header.
+
+# Description
+wavfile provides a set of apis for reading and writing wav header, and also provides three examples to show the application of these apis:
+
+- wav2pcm: convert wav file to pcm file, remove wav header;
+- pcm2wav: convert pcm file to wav file, add wav header;
+- wavinfo: parse wav header of input;
 
 # Compile
 ```
-make clean all
+$ make clean all
 ```
+
+# Usage
+```
+$ ./wav2pcm xxx.wav xxx.pcm
+$ ./pcm2wav xxx.pcm xxx.wav channels bits samplerate
+$ ./wavinfo xxx.wav
+```
+
 # Methods
 ## wavfile_read_open
-`FILE *wavfile_read_open(const char *filename, waveHeader_t *header);`
+### Syntax
+`FILE *wavfile_read_open(const char *filename, unsigned int *size);`
 
-Open a file to read and return the wav header.
+### Synopsis
+open wav file to read.
 
-The following options are supported:
+### Params
+- `filename` : wav file path to read;
+- `size`: return pcm data size of wav file;
 
-* `filename`
-
-	file full path to read.
-* `header`
-
-	wav header struct defined in `wavfile.h`, will be filled when then function succeed.
-
-Return value:
-* success: file pointer
-
-* failed: `NULL`
+### Return value:
+- `Success` : wav file descriptor, skip this wav header;
+- `Failed` : `NULL`;
 
 ## wavfile_read
-`int wavfile_read(FILE *fp, const char *data, size_t size);`
+### Syntax
+`int wavfile_read(FILE *fp, void *data, size_t size);`
 
-Read audio data from file.
+### Synopsis
+read pcm data from wav file.
 
-The following options are supported:
+### Params
+- `fp` : wav file descriptor to read;
+- `data` : pcm data to read;
+- `size`: pcm data size to read;
 
-* `fp`
-
-	file pointer returned by `wavfile_read_open`.
-* `data`
-
-	buffer to save by read data.
-* `size`
-
-	size to read.
-
-Return value:
-* success: the size read 
-
-* failed: `0`
+### Return value:
+- `Success` : number of bytes read;
+- `Failed` : `0` or less than `0`;
 
 ## wavfile_read_close
-`void wavfile_read_close(FILE *fp);`
+### Syntax
+`int wavfile_read_close(FILE *fp);`
 
-Close th file.
+### Synopsis
+close wav file.
 
-The following options are supported:
+### Params
+- `fp` : wav file descriptor;
 
-* `fp`
-
-	file pointer returned by `wavfile_read_open`.
-
-Return value: `N/A`
+### Return value:
+- `Success` : `0`;
+- `Failed` : `-1`;
 
 ## wavfile_write_open
-`FILE *wavfile_write_open(const char *filename, int channels);`
+### Syntax
+`FILE *wavfile_write_open(const char *filename);`
 
-Open a file to write and fill wav header to th file.
+### Synopsis
+open wav file to write.
 
-The following options are supported:
+### Params
+- `filename` : wav file path to write;
 
-* `filename`
-
-	file full path to write.
-* `channels`
-
-	channels of the audio data to write.
-
-Return value:
-* success: file pointer
-
-* failed: `NULL`
+### Return value:
+- `Success` : wav file descriptor, skip 44 bytes of header.;
+- `Failed` : `NULL`;
 
 ## wavfile_write
-`int wavfile_write(FILE *fp, const char *data, size_t size);`
+### Syntax
+`int wavfile_write(FILE *fp, void *data, size_t size);`
 
-Write audio data to file.
+### Synopsis
+write pcm data to wav file.
 
-The following options are supported:
+### Params
+- `fp` : wav file descriptor to write;
+- `data` : pcm data to write;
+- `size`: pcm data size to write;
 
-* `fp`
-
-	file pointer returned by `wavfile_write_open`.
-* `data`
-
-	data to write.
-* `size`
-
-	size to write.
-
-Return value:
-* success: the size written 
-
-* failed: `0`
+### Return value:
+- `Success` : number of bytes written;
+- `Failed` : `0` or less than the size written;
 
 ## wavfile_write_close
-`void wavfile_write_close(FILE *fp);`
+### Syntax
+`int wavfile_write_close(FILE *fp, int channels, int bits, int samplerate);`
 
-Close th file.
+### Synopsis
+close wav file.
 
-The following options are supported:
+### Params
+- `fp` : wav file descriptor;
+- `channels` : channels of wav file;
+- `bits` : bits of wav file;
+- `samplerate` : samplerate of wav file;
+ 
+### Return value:
+- `Success` : `0`;
+- `Failed` : `-1`;
 
-* `fp`
 
-	file pointer returned by `wavfile_write_open`.
+## wavfile_info
+### Syntax
+`int wavfile_info(FILE *fp, wavfile_header_t *header);`
 
-Return value: `N/A`
+### Synopsis
+get wav header info in struct `wavfile_header_t`.
+
+### Params
+- `fp` : wav file descriptor;
+- `header` : struct `wavfile_header_t` for saving wav header info;
+ 
+### Return value:
+- `Success` : `0`;
+- `Failed` : `-1`;

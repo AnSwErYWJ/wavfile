@@ -234,7 +234,7 @@ static int _write_header(FILE *fp, int channels, int samplerate, int bits, unsig
  * @description: open wav file to read.
  * @param char *filename : wav file path.
  * @param unsigned int *size : pcm data size of wav file.
- * @return wav file descriptor, skip header bytes.
+ * @return wav file descriptor, skip this wav header.
  * @Date: 2021-12-28 18:37:29
  */
 FILE *wavfile_read_open(const char *filename, unsigned int *size) {
@@ -274,11 +274,11 @@ end:
 }
 
 /**
- * @description: read data to wav file.
- * @param FILE *fp : wav file path.
+ * @description: read data from wav file.
+ * @param FILE *fp : wav file descriptor.
  * @param char *data : pcm data to read.
- * @param size_t size : pcm data size.
- * @return success - size is read; failed - 0 or less than the size read.
+ * @param size_t size : pcm data size to read.
+ * @return success - number of bytes read; failed - zero or less than zero.
  * @Date: 2021-12-28 18:37:32
  */
 int wavfile_read(FILE *fp, void *data, size_t size) {
@@ -287,7 +287,7 @@ int wavfile_read(FILE *fp, void *data, size_t size) {
 
 /**
  * @description: close wav file.
- * @param FILE *fp: wav file path.
+ * @param FILE *fp: wav file descriptor.
  * @return success - 0; failed - -1.
  * @Date: 2021-12-28 18:37:34
  */
@@ -304,7 +304,7 @@ int wavfile_read_close(FILE *fp) {
 
 /**
  * @description: open wav file to write.
- * @param char *filename : wav file path.
+ * @param char *filename : wav file path to write.
  * @return wav file descriptor, skip 44 bytes of header.
  * @Date: 2021-12-28 17:31:17
  */
@@ -326,10 +326,10 @@ FILE *wavfile_write_open(const char *filename) {
 }
 
 /**
- * @description: write data to wav file.
- * @param FILE *fp : wav file path.
+ * @description: write pcm data to wav file.
+ * @param FILE *fp : wav file descriptor to write.
  * @param char *data : pcm data to write.
- * @param size_t size : pcm data size.
+ * @param size_t size : pcm data size to write.
  * @return success - size is written; failed - 0 or less than the size written.
  * @Date: 2021-12-28 17:32:24
  */
@@ -339,7 +339,7 @@ int wavfile_write(FILE *fp, const void *data, size_t size) {
 
 /**
  * @description: close wav file.
- * @param FILE *fp : wav file path.
+ * @param FILE *fp : wav file descriptor.
  * @param int channels : channels of wav file.
  * @param int bits : bits of wav file.
  * @param int samplerate : samplerate of wav file.
@@ -377,8 +377,8 @@ end:
 
 /**
  * @description: get wav header info in struct wavfile_header_t.
- * @param FILE *fp : wav file path.
- * @param wavfile_header_t *header : struct wavfile_header_t for save wav header info.
+ * @param FILE *fp : wav file descriptor.
+ * @param wavfile_header_t *header : struct wavfile_header_t for saving wav header info.
  * @return success - 0; failed - -1.
  * @Date: 2021-12-29 17:34:28
  */
