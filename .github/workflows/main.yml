@@ -1,0 +1,48 @@
+name: main
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  ci:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: static C/C++ code analysis
+      uses: deep5050/cppcheck-action@v3.0
+
+    - name: clean
+      run: make clean
+
+    - name: build
+      run: make all
+
+    - name: valgrind test wavinfo
+      uses: solareenlo/42valgrind-action@v1.0.3
+      with:
+        flags: "./wavinfo test.wav"
+
+    - name: valgrind test wav2pcm
+      uses: solareenlo/42valgrind-action@v1.0.3
+      with:
+        flags: "./wav2pcm test.wav test.pcm"
+
+    - name: valgrind test pcm2wav
+      uses: solareenlo/42valgrind-action@v1.0.3
+      with:
+        flags: "./pcm2wav test.pcm out.wav 2 16 16000"
+
+    - name: check result
+      run: cmp test.wav out.wav
