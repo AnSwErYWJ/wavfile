@@ -20,14 +20,14 @@
 </p>
 
 ## Name
-wavfile - dynamically parse and fill different formats of wav headers, such as 44 bytes, 46 bytes, 98 bytes, etc.
+wavfile - dynamically parse and fill different formats of wav headers, such as `44` bytes, `46` bytes, `98` bytes, etc.
 
 ## Description
 This repository provides a set of apis for reading and writing wav header, and also provides three examples to show the application of these apis:
 
-- wav2pcm: convert wav file to pcm file, remove wav header;
-- pcm2wav: convert pcm file to wav file, fill 44 bytes's wav header;
-- wavinfo: dynamically parse wav header of input;
+- **wav2pcm**: convert wav file to pcm file, remove wav header;
+- **pcm2wav**: convert pcm file to wav file, fill `44` bytes's wav header;
+- **wavinfo**: dynamically parse wav header of input;
 
 ## Compile
 ```
