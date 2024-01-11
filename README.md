@@ -9,9 +9,6 @@
         <img src="https://img.shields.io/github/last-commit/AnSwErYWJ/wavfile?color=orange" alt="last-commit">
     </a>
     <a href="#">
-        <img src="https://img.shields.io/github/workflow/status/AnSwErYWJ/wavfile/main" alt="workflow">
-    </a>
-    <a href="#">
         <img src="https://img.shields.io/github/languages/top/AnSwErYWJ/wavfile?color=ff69b4" alt="languages">
     </a>
     <a href="#">
